@@ -12,7 +12,7 @@ fun createLinearItem(sign: Boolean, coefficientSrc: String, name: String?): Line
     return LinearItem(coefficient, name);
 }
 
-/**Parse [source]string like `-50 Z` to [LinearItem] object*/
+/**Parse [source] string like `-50 Z` to [LinearItem] object*/
 fun parseLinearItem(sourceRaw: String): LinearItem {
     val source = sourceRaw.trim().replace(',', '.');
 

@@ -1,14 +1,16 @@
 package com.github.kopilov.lpdiff;
+
+import java.util.*
+
 /**
  * Linear programming expression containing sum of items
  */
 class LinearExpression(items: Collection<LinearItem>) {
-    val items = items;
+    val items = TreeSet<LinearItem>(items);
 
     fun append(item: LinearItem): LinearExpression {
-        val newItems = ArrayList<LinearItem>(items);
-        newItems.add(item);
-        return LinearExpression(newItems);
+        items.add(item);
+        return this;
     }
 }
 
