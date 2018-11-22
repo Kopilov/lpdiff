@@ -1,4 +1,4 @@
-package com.github.kopilov_ad.lpdiff;
+package com.github.kopilov.lpdiff;
 
 fun main(args: Array<String>) {
     if (args.size != 2) {

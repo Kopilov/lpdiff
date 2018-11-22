@@ -1,5 +1,6 @@
-package com.github.kopilov_ad.lpdiff
+package com.github.kopilov.lpdiff
 
-class LinearModel() {
+class LinearModel(objective: LinearExpression) {
+    val objective = objective;
 
 }

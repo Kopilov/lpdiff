@@ -1,4 +1,4 @@
-package com.github.kopilov_ad.lpdiff
+package com.github.kopilov.lpdiff
 
 import java.io.File
 
@@ -6,23 +6,23 @@ enum class LpPart {
     START, OBJECTIVE, EXPRESSIONS, BOUNDS, VARIABLES, END
 }
 
-fun parceLpFile(path: String): LinearModel {
+fun parseLpFile(path: String): LinearModel {
     val objectiveBody = StringBuilder();
 
-    fun parceBound(line: String) {
+    fun parseBound(line: String) {
 
     }
 
-    fun parceExpressionPart(line: String) {
+    fun parseExpressionPart(line: String) {
 
     }
 
-    fun parceLine(line: String, stage: LpPart) {
+    fun parseLine(line: String, stage: LpPart) {
         when (stage) {
             LpPart.OBJECTIVE -> objectiveBody.append(line);
-            LpPart.EXPRESSIONS -> parceExpressionPart(line);
-            LpPart.BOUNDS -> parceBound(line)
-            else -> {} //do not parce variables, ignore begin and end
+            LpPart.EXPRESSIONS -> parseExpressionPart(line);
+            LpPart.BOUNDS -> parseBound(line)
+            else -> {} //do not parse variables, ignore begin and end
         }
     }
 
@@ -37,9 +37,10 @@ fun parceLpFile(path: String): LinearModel {
             "Bounds" -> stage = LpPart.BOUNDS;
             "Binaries", "Generals" -> stage = LpPart.VARIABLES;
             "End" -> stage = LpPart.END;
-            else -> parceLine(line, stage);
+            else -> parseLine(line, stage);
         }
     }
     assert(LpPart.END.equals(stage));
-    return LinearModel();
+
+    return LinearModel(parseLinearExpression(objectiveBody.toString()));
 }
