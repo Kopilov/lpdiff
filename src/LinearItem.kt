@@ -3,16 +3,26 @@ package com.github.kopilov.lpdiff;
 import java.util.regex.Pattern
 
 /**
- * Linear variable with float coefficient or unnamed const
+ * Linear variable ([name]) with float [coefficient] or unnamed const
  */
-class LinearItem(val coefficient: Double, val name: String?) {}
+class LinearItem(val coefficient: Double, val name: String?) : Comparable<LinearItem> {
+    override fun compareTo(other: LinearItem): Int {
+        if (name == null) {
+            return 1;
+        }
+        if (other.name == null) {
+            return -1;
+        }
+        return name.compareTo(other.name);
+    }
+}
 
 fun createLinearItem(sign: Boolean, coefficientSrc: String, name: String?): LinearItem {
     val coefficient = if (sign) coefficientSrc.toDouble() else coefficientSrc.toDouble() * -1;
     return LinearItem(coefficient, name);
 }
 
-/**Parse [source]string like `-50 Z` to [LinearItem] object*/
+/**Parse [sourceRaw] string like `-50 Z` to [LinearItem] object*/
 fun parseLinearItem(sourceRaw: String): LinearItem {
     val source = sourceRaw.trim().replace(',', '.');
 

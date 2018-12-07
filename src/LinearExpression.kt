@@ -1,14 +1,39 @@
 package com.github.kopilov.lpdiff;
+
+import java.util.*
+
 /**
  * Linear programming expression containing sum of items
  */
-class LinearExpression(items: Collection<LinearItem>) {
-    val items = items;
+class LinearExpression constructor() {
+    val items = TreeSet<LinearItem>();
+    val index = HashMap<String?, LinearItem>();
+
+    constructor(items: Collection<LinearItem>): this() {
+        for (item in items) {
+            append(item);
+        }
+    }
+
+    constructor(item: LinearItem): this() {
+        append(item);
+    }
 
     fun append(item: LinearItem): LinearExpression {
-        val newItems = ArrayList<LinearItem>(items);
-        newItems.add(item);
-        return LinearExpression(newItems);
+        if (index.containsKey(item.name)) {
+            val extractingItem = index.remove(item.name);
+            if (extractingItem == null || extractingItem.name != item.name) {
+                throw Exception("non-consistent LinearExpression");
+            }
+            items.remove(extractingItem);
+            val newItem = LinearItem(item.coefficient + extractingItem.coefficient, item.name);
+            items.add(newItem);
+            index.put(item.name, newItem);
+        } else {
+            items.add(item);
+            index.put(item.name, item);
+        }
+        return this;
     }
 }
 
