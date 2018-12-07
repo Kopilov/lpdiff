@@ -3,39 +3,43 @@ package com.github.kopilov.lpdiff;
 import java.util.regex.Pattern
 
 /**
- * Linear variable with float coefficient
+ * Linear variable with float coefficient or unnamed const
  */
-class LinearItem(
-        sign: Boolean, //positive true, negative false
-        coefficient: Double,
-        name: String
-) {
-    val sign = sign;
-    val coefficient = coefficient;
-    val name = name;
+class LinearItem(val coefficient: Double, val name: String?) {}
 
+fun createLinearItem(sign: Boolean, coefficientSrc: String, name: String?): LinearItem {
+    val coefficient = if (sign) coefficientSrc.toDouble() else coefficientSrc.toDouble() * -1;
+    return LinearItem(coefficient, name);
 }
 
 /**Parse [source]string like `-50 Z` to [LinearItem] object*/
-fun parseLinearItem(source: String): LinearItem {
-    var sourceTrimmed = source.trim();
+fun parseLinearItem(sourceRaw: String): LinearItem {
+    val source = sourceRaw.trim().replace(',', '.');
 
     //Parse sign. Positive if we do not have '-'. Then remove any (+ or -) sign.
-    val sign = !sourceTrimmed.startsWith('-');
-    if (sourceTrimmed.startsWith('-') || sourceTrimmed.startsWith('+')) {
-        sourceTrimmed = sourceTrimmed.substring(1).trim();
-    }
+    val sign = !source.startsWith('-');
+    val unsignedSource = if (source.startsWith('-') || source.startsWith('+'))
+        source.substring(1).trim();
+    else
+        source;
 
     //Coefficient, if it is presented, should be space-separated
-    if (sourceTrimmed.contains(' ')) {
-        val splittedSource = sourceTrimmed.split(Regex("[\\p{IsWhite_Space}]*"));
+    if (unsignedSource.contains(' ')) {
+        val splittedSource = unsignedSource.split(Regex("[\\p{IsWhite_Space}]*"));
         val coefficient = splittedSource.first();
         val name = splittedSource.last();
-        return LinearItem(sign, coefficient.toDouble(), name);
-    } else {
-        //This is variable name without coefficient
-        return LinearItem(sign, 1.0, sourceTrimmed);
-        //todo: constant without name can also be here
+        return createLinearItem(sign, coefficient, name);
+    } else { //this can be unnamed number or name without presented coefficient (== 1)
+        if (unsignedSource.contains(Regex("^[\\p{IsDigit}\\p{IsPunctuation}]"))) { //number should begin with digit or dot
+            try { //nevertheless, try to parse it before
+                val assertConst = unsignedSource.toDouble();
+                return createLinearItem(sign, unsignedSource, null);
+            } catch (e: NumberFormatException) {
+                //if .toDouble() threw an exception, we have a name, but it is probably invalid()
+                return createLinearItem(sign, "1.0", unsignedSource);
+            }
+        } else {
+            return createLinearItem(sign, "1.0", unsignedSource);
+        }
     }
-
 }
