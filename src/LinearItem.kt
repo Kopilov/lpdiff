@@ -5,7 +5,7 @@ import java.util.regex.Pattern
 /**
  * Linear variable ([name]) with float [coefficient] or unnamed const
  */
-class LinearItem(val coefficient: Double, val name: String?) : Comparable<LinearItem> {
+data class LinearItem(val coefficient: Double, val name: String?) : Comparable<LinearItem> {
     override fun compareTo(other: LinearItem): Int {
         if (name == null) {
             return 1;
@@ -35,7 +35,7 @@ fun parseLinearItem(sourceRaw: String): LinearItem {
 
     //Coefficient, if it is presented, should be space-separated
     if (unsignedSource.contains(' ')) {
-        val splittedSource = unsignedSource.split(Regex("[\\p{IsWhite_Space}]*"));
+        val splittedSource = unsignedSource.split(Regex("[\\p{IsWhite_Space}]+"));
         val coefficient = splittedSource.first();
         val name = splittedSource.last();
         return createLinearItem(sign, coefficient, name);
