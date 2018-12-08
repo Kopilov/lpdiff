@@ -1,12 +1,18 @@
 package com.github.kopilov.lpdiff;
 
-import java.util.regex.Pattern
+import java.text.DecimalFormat
+import java.util.*
+import kotlin.math.absoluteValue
+import java.text.NumberFormat
 
 /**
  * Linear variable ([name]) with float [coefficient] or unnamed const
  */
 data class LinearItem(val coefficient: Double, val name: String?) : Comparable<LinearItem> {
     override fun compareTo(other: LinearItem): Int {
+        if (name == null && other.name == null) {
+            return 0;
+        }
         if (name == null) {
             return 1;
         }
@@ -14,6 +20,24 @@ data class LinearItem(val coefficient: Double, val name: String?) : Comparable<L
             return -1;
         }
         return name.compareTo(other.name);
+    }
+
+    fun format(locale: Locale = Locale.getDefault(Locale.Category.FORMAT)): String {
+        val sign = if (coefficient >= 0) "+" else "-";
+        val coefficientAbsoluteValue = coefficient.absoluteValue;
+        val coefficientFormatted = if (coefficientAbsoluteValue <= 10E-5 || coefficientAbsoluteValue >= 10E10) {
+            "%e".format(locale, coefficientAbsoluteValue)
+        } else {
+            val nf = NumberFormat.getNumberInstance(locale);
+            val decimalFormat = nf as DecimalFormat;
+            decimalFormat.applyPattern("#.###############");
+            decimalFormat.format(coefficientAbsoluteValue);
+        }
+        return if (name == null) {
+            "$sign $coefficientFormatted";
+        } else {
+            "$sign $coefficientFormatted $name";
+        }
     }
 }
 

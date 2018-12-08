@@ -35,6 +35,20 @@ class LinearExpression constructor() {
         }
         return this;
     }
+
+    fun format(locale: Locale = Locale.getDefault(Locale.Category.FORMAT)): String {
+        val result = StringBuilder();
+        for (item in items) {
+            result.append(item.format(locale)).append(" ");
+        }
+        return result.toString();
+    }
+
+    override fun toString(): String {
+        val result = StringBuilder("{ ");
+        result.append(format(Locale.ROOT));
+        return result.append("}").toString();
+    }
 }
 
 /**parse [source] string like `5 x1 + 10 x2 - 1.5 y` to [LinearExpression] object */
