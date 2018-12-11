@@ -66,7 +66,7 @@ fun parseLinearItem(sourceRaw: String): LinearItem {
     } else { //this can be unnamed number or name without presented coefficient (== 1)
         if (unsignedSource.contains(Regex("^[\\p{IsDigit}\\p{IsPunctuation}]"))) { //number should begin with digit or dot
             try { //nevertheless, try to parse it before
-                val assertConst = unsignedSource.toDouble();
+                unsignedSource.toDouble();
                 return createLinearItem(sign, unsignedSource, null);
             } catch (e: NumberFormatException) {
                 //if .toDouble() threw an exception, we have a name, but it is probably invalid()

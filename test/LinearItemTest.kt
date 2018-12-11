@@ -13,5 +13,6 @@ class LinearItemTest {
         assertEquals(parseLinearItem("-47e-3 abc"), LinearItem(-0.047, "abc"));
         assertEquals(parseLinearItem("123,4"), LinearItem(123.4, null));
         assertEquals(parseLinearItem("+973.6"), LinearItem(9736E-1, null));
+        assertEquals(parseLinearItem("74a6"), LinearItem(1.0, "74a6"));
     }
 }
