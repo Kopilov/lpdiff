@@ -1,6 +1,7 @@
 package com.github.kopilov.lpdiff
 
-class LinearModel(objective: LinearExpression) {
-    val objective = objective;
-
+class LinearModel(val objective: LinearExpression) {
+    override fun toString(): String {
+        return objective.toString();
+    }
 }
