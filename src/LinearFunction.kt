@@ -3,9 +3,9 @@ package com.github.kopilov.lpdiff;
 import java.util.*
 
 /**
- * Linear programming expression containing sum of items
+ * Linear programming function containing sum of items
  */
-class LinearExpression constructor() {
+class LinearFunction constructor() {
     val items = TreeSet<LinearItem>();
     val index = HashMap<String?, LinearItem>();
 
@@ -19,11 +19,11 @@ class LinearExpression constructor() {
         append(item);
     }
 
-    fun append(item: LinearItem): LinearExpression {
+    fun append(item: LinearItem): LinearFunction {
         if (index.containsKey(item.name)) {
             val extractingItem = index.remove(item.name);
             if (extractingItem == null || extractingItem.name != item.name) {
-                throw Exception("non-consistent LinearExpression");
+                throw Exception("non-consistent LinearFunction");
             }
             items.remove(extractingItem);
             val newItem = LinearItem(item.coefficient + extractingItem.coefficient, item.name);
@@ -51,12 +51,12 @@ class LinearExpression constructor() {
     }
 }
 
-/**parse [source] string like `5 x1 + 10 x2 - 1.5 y` to [LinearExpression] object */
-fun parseLinearExpression(source: String): LinearExpression {
+/**parse [source] string like `5 x1 + 10 x2 - 1.5 y` to [LinearFunction] object */
+fun parseLinearFunction(source: String): LinearFunction {
     val splittedSource = source.replace(" + ", " | ").replace(" - ", " | - ").split(" | ");
     val items = ArrayList<LinearItem>();
     for (itemSource in splittedSource) {
         items.add(parseLinearItem(itemSource));
     }
-    return LinearExpression(items);
+    return LinearFunction(items);
 }

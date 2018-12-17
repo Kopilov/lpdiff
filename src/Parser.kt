@@ -3,7 +3,7 @@ package com.github.kopilov.lpdiff
 import java.io.File
 
 enum class LpPart {
-    START, OBJECTIVE, EXPRESSIONS, BOUNDS, VARIABLES, END
+    START, OBJECTIVE, CONSTRAINTS, BOUNDS, VARIABLES, END
 }
 
 fun parseLpFile(path: String): LinearModel {
@@ -13,14 +13,14 @@ fun parseLpFile(path: String): LinearModel {
 
     }
 
-    fun parseExpressionPart(line: String) {
+    fun parseConstraints(line: String) {
 
     }
 
     fun parseLine(line: String, stage: LpPart) {
         when (stage) {
             LpPart.OBJECTIVE -> objectiveBody.append(line);
-            LpPart.EXPRESSIONS -> parseExpressionPart(line);
+            LpPart.CONSTRAINTS -> parseConstraints(line);
             LpPart.BOUNDS -> parseBound(line)
             else -> {} //do not parse variables, ignore begin and end
         }
@@ -33,7 +33,7 @@ fun parseLpFile(path: String): LinearModel {
     for (line in lines) {
         when (line) {
             "Minimize", "Maximize" -> stage = LpPart.OBJECTIVE;
-            "Subject To" -> stage = LpPart.EXPRESSIONS;
+            "Subject To" -> stage = LpPart.CONSTRAINTS;
             "Bounds" -> stage = LpPart.BOUNDS;
             "Binaries", "Generals" -> stage = LpPart.VARIABLES;
             "End" -> stage = LpPart.END;
@@ -42,5 +42,5 @@ fun parseLpFile(path: String): LinearModel {
     }
     assert(LpPart.END.equals(stage));
 
-    return LinearModel(parseLinearExpression(objectiveBody.toString()));
+    return LinearModel(parseLinearFunction(objectiveBody.toString()));
 }
