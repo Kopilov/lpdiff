@@ -60,6 +60,9 @@ fun parseLinearItem(sourceRaw: String): LinearItem {
     //Coefficient, if it is presented, should be space-separated
     if (unsignedSource.contains(' ')) {
         val splittedSource = unsignedSource.split(Regex("[\\p{IsWhite_Space}]+"));
+        if (splittedSource.size > 2) {
+            throw IllegalArgumentException("argument `$sourceRaw` has too many space-separated elements");
+        }
         val coefficient = splittedSource.first();
         val name = splittedSource.last();
         return createLinearItem(sign, coefficient, name);

@@ -5,7 +5,7 @@ import kotlin.test.assertEquals
 
 class LinearFunctionTest{
     @Test
-    fun linearExpressionTest() {
+    fun linearFunctionTest() {
         assertEquals(
                 "{ + 5.38045 x_1_2 + 9.86045 y_1_0 - 4.90045 z_1_1 - 10 }",
                 parseLinearFunction("9.86045 y_1_0 - 10 - 4.90045 z_1_1 + 5.38045 x_1_2").toString()
