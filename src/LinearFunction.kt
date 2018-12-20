@@ -2,6 +2,10 @@ package com.github.kopilov.lpdiff;
 
 import java.util.*
 
+enum class FunctionTarget {
+    MINIMIZE, MAXIMIZE
+}
+
 /**
  * Linear programming function containing sum of items
  */

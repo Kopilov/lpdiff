@@ -9,11 +9,15 @@ enum class LpPart {
 fun parseLpFile(path: String): LinearModel {
     val objectiveBody = StringBuilder();
 
-    fun parseBound(line: String) {
+    val constraintsParsed = ArrayList<LinearConstraint>();
+
+    fun parseConstraints(line: String) {
 
     }
 
-    fun parseConstraints(line: String) {
+    val boundsParsed = ArrayList<LinearBound>();
+
+    fun parseBound(line: String) {
 
     }
 
@@ -29,10 +33,12 @@ fun parseLpFile(path: String): LinearModel {
     val reader = File(path).bufferedReader();
     val lines = reader.lineSequence();
     var stage = LpPart.START;
+    var target = FunctionTarget.MINIMIZE;
 
     for (line in lines) {
         when (line) {
-            "Minimize", "Maximize" -> stage = LpPart.OBJECTIVE;
+            "Minimize" -> {target = FunctionTarget.MINIMIZE; stage = LpPart.OBJECTIVE};
+            "Maximize" -> {target = FunctionTarget.MAXIMIZE; stage = LpPart.OBJECTIVE};
             "Subject To" -> stage = LpPart.CONSTRAINTS;
             "Bounds" -> stage = LpPart.BOUNDS;
             "Binaries", "Generals" -> stage = LpPart.VARIABLES;
@@ -42,5 +48,5 @@ fun parseLpFile(path: String): LinearModel {
     }
     assert(LpPart.END.equals(stage));
 
-    return LinearModel(parseLinearFunction(objectiveBody.toString()));
+    return LinearModel(target, parseLinearFunction(objectiveBody.toString()), constraintsParsed, boundsParsed);
 }
