@@ -11,8 +11,20 @@ fun parseLpFile(path: String): LinearModel {
 
     val constraintsParsed = ArrayList<LinearConstraint>();
 
-    fun parseConstraints(line: String) {
-
+    val constraintSrc = StringBuilder();
+    fun parseConstraints(line: String, flush: Boolean) {
+        if (line.indexOf(':') >= 0 || flush) {
+            //If line contains ':' delimiter, it is the beginning of new constraint.
+            //else the previous still continues
+            //Attention: we do not know the last line, have to call this function at the end to flush
+            if (constraintSrc.isNotEmpty()) {
+                constraintsParsed.add(parseLinearConstraint(constraintSrc.toString()));
+                constraintSrc.clear();
+            }
+        }
+        if (!flush) {
+            constraintSrc.append(" ").append(line);
+        }
     }
 
     val boundsParsed = ArrayList<LinearBound>();
@@ -24,7 +36,7 @@ fun parseLpFile(path: String): LinearModel {
     fun parseLine(line: String, stage: LpPart) {
         when (stage) {
             LpPart.OBJECTIVE -> objectiveBody.append(line);
-            LpPart.CONSTRAINTS -> parseConstraints(line);
+            LpPart.CONSTRAINTS -> parseConstraints(line, false);
             LpPart.BOUNDS -> parseBound(line)
             else -> {} //do not parse variables, ignore begin and end
         }
@@ -46,6 +58,7 @@ fun parseLpFile(path: String): LinearModel {
             else -> parseLine(line, stage);
         }
     }
+    parseConstraints("", true);
     assert(LpPart.END.equals(stage));
 
     return LinearModel(target, parseLinearFunction(objectiveBody.toString()), constraintsParsed, boundsParsed);
