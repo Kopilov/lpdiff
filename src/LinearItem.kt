@@ -67,14 +67,8 @@ fun parseLinearItem(sourceRaw: String): LinearItem {
         val name = splittedSource.last();
         return createLinearItem(sign, coefficient, name);
     } else { //this can be unnamed number or name without presented coefficient (== 1)
-        if (unsignedSource.contains(Regex("^[\\p{IsDigit}\\p{IsPunctuation}]"))) { //number should begin with digit or dot
-            try { //nevertheless, try to parse it before
-                unsignedSource.toDouble();
-                return createLinearItem(sign, unsignedSource, null);
-            } catch (e: NumberFormatException) {
-                //if .toDouble() threw an exception, we have a name, but it is probably invalid()
-                return createLinearItem(sign, "1.0", unsignedSource);
-            }
+        if (unsignedSource.toDoubleOrNull() is Double) {
+            return createLinearItem(sign, unsignedSource, null);
         } else {
             return createLinearItem(sign, "1.0", unsignedSource);
         }

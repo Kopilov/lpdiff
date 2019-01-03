@@ -4,6 +4,6 @@ data class LinearModel (
         val target: FunctionTarget,
         val objective: LinearFunction,
         val constraints: Collection<LinearConstraint>,
-        val bonds: Collection<LinearBound>
+        val bonds: Collection<LinearVariableBound>
 ) {
 }
