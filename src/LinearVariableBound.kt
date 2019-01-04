@@ -21,13 +21,14 @@ data class LinearVariableBound (
  * Type is always set to continuous, it can be changed later.
  */
 fun parseBound(line: String): LinearVariableBound {
-    if (line.indexOf(" free", 0, true) >= 0) {
-        val name = line.replace(" free", "", true).trim();
+    val boundSrc = line.trim();
+    if (boundSrc.indexOf(" free", 0, true) >= 0) {
+        val name = boundSrc.replace(" free", "", true).trim();
         return LinearVariableBound(name, VariableType.CONTINUOUS, null, null);
     }
-    val splitByLess = line.replace("<=", "<").split('<');
+    val splitByLess = boundSrc.replace("<=", "<").split('<');
     val numberOfLess = splitByLess.size - 1;
-    val splitByMore = line.replace(">=", ">").split('>');
+    val splitByMore = boundSrc.replace(">=", ">").split('>');
     val numberOfMore = splitByMore.size - 1;
     //one type of sign must be used
     if (numberOfLess == 0 && numberOfMore == 0) {
@@ -37,8 +38,8 @@ fun parseBound(line: String): LinearVariableBound {
         throw  IllegalArgumentException("'<' and '>' are used together in argument ($line)");
     }
     if (numberOfLess == 1) {
-        val leftToken = splitByLess[0];
-        val rightToken = splitByLess[1];
+        val leftToken = splitByLess[0].trim();
+        val rightToken = splitByLess[1].trim();
         //determine variable name and bound value
         val leftIsNumber = leftToken.toDoubleOrNull() != null;
         val rightIsNumber = rightToken.toDoubleOrNull() != null;
@@ -55,9 +56,9 @@ fun parseBound(line: String): LinearVariableBound {
         }
     }
     if (numberOfLess == 2) {
-        val leftToken = splitByMore[0];
-        val middleToken = splitByMore[1];
-        val rightToken = splitByMore[2];
+        val leftToken = splitByLess[0].trim();
+        val middleToken = splitByLess[1].trim();
+        val rightToken = splitByLess[2].trim();
         // 10 < x < 20
         if (middleToken.toDoubleOrNull() is Double) {
             throw IllegalArgumentException("No variable name found in argument ($line)");
@@ -71,8 +72,8 @@ fun parseBound(line: String): LinearVariableBound {
         throw  IllegalArgumentException("bound line ($line) should not have 3 or more '<' signs");
     }
     if (numberOfMore == 1) {
-        val leftToken = splitByMore[0];
-        val rightToken = splitByMore[1];
+        val leftToken = splitByMore[0].trim();
+        val rightToken = splitByMore[1].trim();
         //determine variable name and bound value
         val leftIsNumber = leftToken.toDoubleOrNull() != null;
         val rightIsNumber = rightToken.toDoubleOrNull() != null;
@@ -89,9 +90,9 @@ fun parseBound(line: String): LinearVariableBound {
         }
     }
     if (numberOfMore == 2) {
-        val leftToken = splitByMore[0];
-        val middleToken = splitByMore[1];
-        val rightToken = splitByMore[2];
+        val leftToken = splitByMore[0].trim();
+        val middleToken = splitByMore[1].trim();
+        val rightToken = splitByMore[2].trim();
         // 20 > x > 10
         if (middleToken.toDoubleOrNull() is Double) {
             throw IllegalArgumentException("No variable name found in argument ($line)");

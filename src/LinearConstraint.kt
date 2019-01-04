@@ -80,6 +80,7 @@ fun parseLinearConstraint(source: String): LinearConstraint {
         if (moreSignCount > 0) {
             return ConstraintSign.MORE;
         }
+        assert(equalSignCount > 0);
         return ConstraintSign.EQUAL;
     }
 
