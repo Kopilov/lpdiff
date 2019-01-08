@@ -49,6 +49,9 @@ fun createLinearItem(sign: Boolean, coefficientSrc: String, name: String?): Line
 /**Parse [sourceRaw] string like `-50 Z` to [LinearItem] object*/
 fun parseLinearItem(sourceRaw: String): LinearItem {
     val source = sourceRaw.trim().replace(',', '.');
+    if (source == "") {
+        throw java.lang.IllegalArgumentException("source is blank");
+    }
 
     //Parse sign. Positive if we do not have '-'. Then remove any (+ or -) sign.
     val sign = !source.startsWith('-');

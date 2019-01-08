@@ -1,6 +1,7 @@
 package com.github.kopilov.lpdiff
 
 import java.io.File
+import java.util.*
 
 enum class LpPart {
     START, OBJECTIVE, CONSTRAINTS, BOUNDS, VARIABLES, END
@@ -9,7 +10,7 @@ enum class LpPart {
 fun parseLpFile(path: String): LinearModel {
     val objectiveBody = StringBuilder();
 
-    val constraintsParsed = ArrayList<LinearConstraint>();
+    val constraintsParsed = TreeSet<LinearConstraint>();
 
     val constraintSrc = StringBuilder();
     fun parseConstraints(line: String, flush: Boolean) {
@@ -106,5 +107,5 @@ fun parseLpFile(path: String): LinearModel {
     parseConstraints("", true);
     assert(LpPart.END.equals(stage));
 
-    return LinearModel(target, parseLinearFunction(objectiveBody.toString()), constraintsParsed, boundsIndex.values);
+    return LinearModel(target, parseLinearFunction(objectiveBody.toString()), constraintsParsed, TreeSet(boundsIndex.values));
 }

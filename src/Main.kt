@@ -11,7 +11,7 @@ fun main(args: Array<String>) {
     val model2SrcPath = "resource/model2.lp"//args[1];
 
     val linearModel1 = parseLpFile(model1SrcPath);
-    println(linearModel1);
     val linearModel2 = parseLpFile(model2SrcPath);
-    println(linearModel2);
+    val s = linearModel2.toString();
+    println(s.replace(" + ", "\n + ").replace(" - ", "\n - ").replace(", ", ",\n"));
 }

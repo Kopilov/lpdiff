@@ -9,7 +9,13 @@ data class LinearConstraint constructor(
         val leftSide: LinearFunction,
         val sign: ConstraintSign,
         val rightSide: Double
-) {
+) : Comparable<LinearConstraint>{
+    override fun compareTo(other: LinearConstraint): Int {
+        val thisNames = leftSide.items.map { l: LinearItem -> l.name } .joinToString(" ");
+        val otherNames = other.leftSide.items.map { l: LinearItem -> l.name } .joinToString(" ");
+
+        return thisNames.compareTo(otherNames);
+    }
 
 }
 
@@ -86,8 +92,8 @@ fun parseLinearConstraint(source: String): LinearConstraint {
 
     val sign = parseAndValidateSign();
     val leftAndRight = sourceParsing.split("|");
-    val leftSrc = leftAndRight.first();
-    val rightSrc = leftAndRight.last();
+    val leftSrc = leftAndRight.first().trim();
+    val rightSrc = leftAndRight.last().trim();
     val left = parseLinearFunction(leftSrc);
     val right = parseLinearFunction(rightSrc);
     return normalizeLinearConstraint(name, left, sign, right);

@@ -60,7 +60,9 @@ fun parseLinearFunction(source: String): LinearFunction {
     val splittedSource = source.replace("+", "|").replace("-", "|-").split("|");
     val items = ArrayList<LinearItem>();
     for (itemSource in splittedSource) {
-        items.add(parseLinearItem(itemSource));
+        if (itemSource.isNotBlank()) {
+            items.add(parseLinearItem(itemSource));
+        }
     }
     return LinearFunction(items);
 }

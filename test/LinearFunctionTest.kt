@@ -14,5 +14,6 @@ class LinearFunctionTest{
                 "{ - 1.2 x_4 + 1.8 x_5 + 3 x_6 - 2.6 }",
                 parseLinearFunction("5.6 x_4 - 0.5 x_5 + 9.4 x_6 - 4.7 + 2.3 x_5 - 6.4 x_6 - 6.8 x_4 + 2.1").toString()
         )
+        assertEquals("{ - 10 }", parseLinearFunction(" -10").toString())
     }
 }
