@@ -25,12 +25,16 @@ class LinearVariableBoundTest {
                 LinearVariableBound("free_x_4", t, null, null),
                 parseBound("  free_x_4 free")
         );
+        assertEquals(
+                LinearVariableBound("x_5", t, 10.0, 10.0),
+                parseBound("  x_5 = 10")
+        );
         val e1 = assertFailsWith(
                 IllegalArgumentException::class
         ) {
             print(parseBound("  x_5 10"));
         };
-        assertEquals(e1.message, "No '<', '>' or 'free' found in argument (  x_5 10)");
+        assertEquals(e1.message, "No '<', '>', '=' or 'free' found in argument (  x_5 10)");
 
         val e2 = assertFailsWith(
                 IllegalArgumentException::class
