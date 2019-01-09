@@ -85,7 +85,7 @@ fun parseEquals(splitByEquals: List<String>, line: String): LinearVariableBound 
         throw  IllegalArgumentException("No bound value found in argument ($line)");
     }
     if (leftIsNumber) {//10 = x
-        return LinearVariableBound(rightToken, VariableType.CONTINUOUS, rightToken.toDouble(), leftToken.toDouble());
+        return LinearVariableBound(rightToken, VariableType.CONTINUOUS, leftToken.toDouble(), leftToken.toDouble());
     } else {//x = 10
         return LinearVariableBound(leftToken, VariableType.CONTINUOUS, rightToken.toDouble(), rightToken.toDouble());
     }
