@@ -2,6 +2,7 @@ package com.github.kopilov.lpdiff
 
 import java.util.HashMap
 import java.util.TreeSet
+import kotlin.math.absoluteValue
 
 fun compareByNullableNames(name1: String?, name2: String?): Int{
     if (name1 == null && name2 == null) {
@@ -19,6 +20,28 @@ fun compareByNullableNames(name1: String?, name2: String?): Int{
 data class DoubleLinearItem(val name: String?, val coefficient1: Double?, val coefficient2: Double?) : Comparable<DoubleLinearItem> {
     override fun compareTo(other: DoubleLinearItem): Int {
         return compareByNullableNames(name, other.name)
+    }
+
+    fun calculateAbsoluteDifference(): Double? {
+        if (coefficient1 is Double && coefficient2 is Double) {
+            return (coefficient1 - coefficient2).absoluteValue;
+        } else {
+            return null;
+        }
+    }
+
+    fun calculateRelativeDifference(): Double? {
+        if (coefficient1 is Double && coefficient2 is Double) {
+            val middle = (coefficient1 + coefficient2) / 2;
+            val absoluteDifference = calculateAbsoluteDifference();
+            return absoluteDifference?.div(middle);
+        } else {
+            return null;
+        }
+    }
+
+    fun haveLostValue(): Boolean {
+        return coefficient1 == null || coefficient2 == null;
     }
 }
 

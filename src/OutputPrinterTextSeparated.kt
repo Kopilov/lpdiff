@@ -7,9 +7,25 @@ class OutputPrinterTextSeparated constructor(val stream: PrintStream, val delimi
     constructor() : this(System.out, "\t") {}
 
     override fun printFunctionsPair(itemsInPairs: Collection<DoubleLinearItem>) {
-        stream.println("variable_name${delimiter}coefficient_value_1${delimiter}coefficient_value_2");
+        val headerCells = arrayListOf(
+                "variable_name",
+                "coefficient_value_1",
+                "coefficient_value_2",
+                "is_lost_or_extraneous",
+                "absolute_difference",
+                "relative_difference"
+        );
+        stream.println(headerCells.joinToString(delimiter));
         for (itemPair in itemsInPairs) {
-            stream.println("${itemPair.name}$delimiter${itemPair.coefficient1}$delimiter${itemPair.coefficient2}");
+            val rowCells = arrayListOf(
+                    itemPair.name.orEmpty(),
+                    itemPair.coefficient1?: "",
+                    itemPair.coefficient2?: "",
+                    if (itemPair.haveLostValue()) "True" else "",
+                    itemPair.calculateAbsoluteDifference()?: "",
+                    itemPair.calculateRelativeDifference()?: ""
+            );
+            stream.println(rowCells.joinToString(delimiter));
         }
     }
 }
