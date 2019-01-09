@@ -10,16 +10,7 @@ import java.text.NumberFormat
  */
 data class LinearItem(val coefficient: Double, val name: String?) : Comparable<LinearItem> {
     override fun compareTo(other: LinearItem): Int {
-        if (name == null && other.name == null) {
-            return 0;
-        }
-        if (name == null) {
-            return 1;
-        }
-        if (other.name == null) {
-            return -1;
-        }
-        return name.compareTo(other.name);
+        return compareByNullableNames(name, other.name)
     }
 
     fun format(locale: Locale = Locale.getDefault(Locale.Category.FORMAT)): String {

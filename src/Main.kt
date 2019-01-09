@@ -12,6 +12,8 @@ fun main(args: Array<String>) {
 
     val linearModel1 = parseLpFile(model1SrcPath);
     val linearModel2 = parseLpFile(model2SrcPath);
-    val s = linearModel2.toString();
-    println(s.replace(" + ", "\n + ").replace(" - ", "\n - ").replace(", ", ",\n"));
+
+    val stitchedObjectives = stitchLinearFunctions(linearModel1.objective, linearModel2.objective);
+    val outputPrinter = OutputPrinterTextSeparated();
+    outputPrinter.printFunctionsPair(stitchedObjectives);
 }

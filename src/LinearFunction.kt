@@ -11,7 +11,7 @@ enum class FunctionTarget {
  */
 class LinearFunction constructor() {
     val items = TreeSet<LinearItem>();
-    val index = HashMap<String?, LinearItem>();
+    private val index = HashMap<String?, LinearItem>();
 
     constructor(items: Collection<LinearItem>): this() {
         for (item in items) {
@@ -40,7 +40,7 @@ class LinearFunction constructor() {
         return this;
     }
 
-    fun format(locale: Locale = Locale.getDefault(Locale.Category.FORMAT)): String {
+    private fun format(locale: Locale = Locale.getDefault(Locale.Category.FORMAT)): String {
         val result = StringBuilder();
         for (item in items) {
             result.append(item.format(locale)).append(" ");
