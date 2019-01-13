@@ -6,7 +6,31 @@ class OutputPrinterTextSeparated constructor(val stream: PrintStream, val delimi
 
     constructor() : this(System.out, "\t") {}
 
-    override fun printFunctionsPair(itemsInPairs: Collection<DoubleLinearItem>) {
+    override fun printVariablesNames(variablesNames: Iterable<String>) {
+        stream.println(variablesNames.joinToString(delimiter));
+    }
+
+    override fun printFunctionValuesForNames(variables: Iterable<LinearItem>, names: Iterable<String>, rightSide: Double) {
+        val index = HashMap<String?, Double>();
+        for (variable in variables) {
+            index.put(variable.name, variable.coefficient);
+        }
+        val rowCells = ArrayList<String>();
+        fun printNameValue(name: String) {
+            if (index.containsKey(name)) {
+                rowCells.add(index.get(name).toString());
+            } else {
+                rowCells.add("");
+            }
+        }
+        for (name in names) {
+            printNameValue(name);
+        }
+        rowCells.add(rightSide.toString());
+        stream.println(rowCells.joinToString(delimiter));
+    }
+
+    override fun printFunctionsPair(itemsInPairs: Iterable<DoubleLinearItem>) {
         val headerCells = arrayListOf(
                 "variable_name",
                 "coefficient_value_1",

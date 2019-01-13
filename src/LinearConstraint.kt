@@ -1,5 +1,7 @@
 package com.github.kopilov.lpdiff
 
+import java.util.*
+
 /**
  * Linear programming named constraint (equality or inequality) contains sign (more, equal, or less),
  * [LinearFunction] in left side and constant in right side.
@@ -14,9 +16,19 @@ data class LinearConstraint constructor(
         val thisNames = leftSide.items.map { l: LinearItem -> l.name } .joinToString(" ");
         val otherNames = other.leftSide.items.map { l: LinearItem -> l.name } .joinToString(" ");
 
-        return thisNames.compareTo(otherNames);
+        return (thisNames + name).compareTo(otherNames + other.name);
     }
 
+    private val variablesNamesSet = TreeSet<String>();
+    fun getVariablesNamesSet(): Collection<String> {
+        if (!variablesNamesSet.isEmpty()) {
+            return variablesNamesSet;
+        }
+        for (item in leftSide.items) {
+            variablesNamesSet.add(item.name!!);
+        }
+        return variablesNamesSet;
+    }
 }
 
 enum class ConstraintSign {
