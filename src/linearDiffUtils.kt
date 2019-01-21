@@ -2,6 +2,8 @@ package com.github.kopilov.lpdiff
 
 import java.util.HashMap
 import java.util.TreeSet
+import java.util.concurrent.ForkJoinPool
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.absoluteValue
 
 fun compareByNullableNames(name1: String?, name2: String?): Int{
@@ -65,4 +67,56 @@ fun stitchLinearFunctions(fun1: LinearFunction, fun2: LinearFunction): Collectio
         }
     }
     return stitchedItems;
+}
+
+fun convertFunctionItems(function: LinearFunction, converter: (item: LinearItem) -> LinearItem): LinearFunction {
+    val convertedFunction = LinearFunction();
+    for (item in function.items) {
+        convertedFunction.append(converter(item));
+    }
+    return convertedFunction;
+}
+
+fun convertModelItems(
+        model: LinearModel,
+        itemConverter: (item: LinearItem) -> LinearItem,
+        boundConverter: (bound: LinearVariableBound) -> LinearVariableBound
+): LinearModel {
+    val executor = ForkJoinPool();
+    val cache = Array<LinearConstraint?>(model.constraints.size, {null});
+    var objective: LinearFunction? = null;
+    executor.execute {
+        objective = convertFunctionItems(model.objective, itemConverter);
+    };
+    val i = AtomicInteger(0);
+    for (constraint in model.constraints) {
+        executor.execute {
+            val i_immutable = i.getAndIncrement();
+            val leftSide = convertFunctionItems(constraint.leftSide, itemConverter);
+            cache[i_immutable] = LinearConstraint(
+                    constraint.name,
+                    leftSide,
+                    constraint.sign,
+                    constraint.rightSide
+            );
+        };
+    }
+    executor.shutdown();
+    while(!executor.isTerminated) {
+        Thread.sleep(10);
+    }
+    val constraints = TreeSet<LinearConstraint>();
+    for (constraint in cache) {
+        constraints.add(constraint!!);
+    }
+    val bounds = TreeSet<LinearVariableBound>();
+    for (bound in model.bounds) {
+        bounds.add(boundConverter(bound));
+    }
+    return LinearModel(
+            model.target,
+            objective!!,
+            constraints,
+            bounds
+    );
 }
