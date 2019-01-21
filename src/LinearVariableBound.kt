@@ -76,18 +76,18 @@ fun parseEquals(splitByEquals: List<String>, line: String): LinearVariableBound 
     val leftToken = splitByEquals[0].trim();
     val rightToken = splitByEquals[1].trim();
     //determine variable name and bound value
-    val leftIsNumber = leftToken.toDoubleOrNull() != null;
-    val rightIsNumber = rightToken.toDoubleOrNull() != null;
+    val leftIsNumber = isValue(leftToken);
+    val rightIsNumber = isValue(rightToken);
     if (leftIsNumber && rightIsNumber) {
-        throw  IllegalArgumentException("No variable name found in argument ($line)");
+        throw IllegalArgumentException("No variable name found in argument ($line)");
     }
     if (!leftIsNumber && !rightIsNumber) {
-        throw  IllegalArgumentException("No bound value found in argument ($line)");
+        throw IllegalArgumentException("No bound value found in argument ($line)");
     }
     if (leftIsNumber) {//10 = x
-        return LinearVariableBound(rightToken, VariableType.CONTINUOUS, leftToken.toDouble(), leftToken.toDouble());
+        return LinearVariableBound(rightToken, VariableType.CONTINUOUS, toValue(leftToken), toValue(leftToken));
     } else {//x = 10
-        return LinearVariableBound(leftToken, VariableType.CONTINUOUS, rightToken.toDouble(), rightToken.toDouble());
+        return LinearVariableBound(leftToken, VariableType.CONTINUOUS, toValue(rightToken), toValue(rightToken));
     }
 }
 
@@ -96,21 +96,21 @@ private fun parseDoubleMore(splitByMore: List<String>, line: String): LinearVari
     val middleToken = splitByMore[1].trim();
     val rightToken = splitByMore[2].trim();
     // 20 > x > 10
-    if (middleToken.toDoubleOrNull() is Double) {
+    if (isValue(middleToken)) {
         throw IllegalArgumentException("No variable name found in argument ($line)");
     }
-    if (leftToken.toDoubleOrNull() == null || rightToken.toDoubleOrNull() == null) {
+    if (isName(leftToken) || isName(rightToken)) {
         throw IllegalArgumentException("Illegal bounds values in argument ($line)");
     }
-    return LinearVariableBound(middleToken, VariableType.CONTINUOUS, rightToken.toDouble(), leftToken.toDouble());
+    return LinearVariableBound(middleToken, VariableType.CONTINUOUS, toValue(rightToken), toValue(leftToken));
 }
 
 private fun parseSingleMore(splitByMore: List<String>, line: String): LinearVariableBound {
     val leftToken = splitByMore[0].trim();
     val rightToken = splitByMore[1].trim();
     //determine variable name and bound value
-    val leftIsNumber = leftToken.toDoubleOrNull() != null;
-    val rightIsNumber = rightToken.toDoubleOrNull() != null;
+    val leftIsNumber = isValue(leftToken);
+    val rightIsNumber = isValue(rightToken);
     if (leftIsNumber && rightIsNumber) {
         throw  IllegalArgumentException("No variable name found in argument ($line)");
     }
@@ -118,9 +118,9 @@ private fun parseSingleMore(splitByMore: List<String>, line: String): LinearVari
         throw  IllegalArgumentException("No bound value found in argument ($line)");
     }
     if (leftIsNumber) {//10 > x
-        return LinearVariableBound(rightToken, VariableType.CONTINUOUS, 0.0, leftToken.toDouble());
+        return LinearVariableBound(rightToken, VariableType.CONTINUOUS, 0.0, toValue(leftToken));
     } else {//x > 10
-        return LinearVariableBound(leftToken, VariableType.CONTINUOUS, rightToken.toDouble(), null);
+        return LinearVariableBound(leftToken, VariableType.CONTINUOUS, toValue(rightToken), null);
     }
 }
 
@@ -129,21 +129,21 @@ private fun parseDoubleLess(splitByLess: List<String>, line: String): LinearVari
     val middleToken = splitByLess[1].trim();
     val rightToken = splitByLess[2].trim();
     // 10 < x < 20
-    if (middleToken.toDoubleOrNull() is Double) {
+    if (isValue(middleToken)) {
         throw IllegalArgumentException("No variable name found in argument ($line)");
     }
-    if (leftToken.toDoubleOrNull() == null || rightToken.toDoubleOrNull() == null) {
+    if (isName(leftToken) || isName(rightToken)) {
         throw IllegalArgumentException("Illegal bounds values in argument ($line)");
     }
-    return LinearVariableBound(middleToken, VariableType.CONTINUOUS, leftToken.toDouble(), rightToken.toDouble());
+    return LinearVariableBound(middleToken, VariableType.CONTINUOUS, toValue(leftToken), toValue(rightToken));
 }
 
 private fun parseSingleLess(splitByLess: List<String>, line: String): LinearVariableBound {
     val leftToken = splitByLess[0].trim();
     val rightToken = splitByLess[1].trim();
     //determine variable name and bound value
-    val leftIsNumber = leftToken.toDoubleOrNull() != null;
-    val rightIsNumber = rightToken.toDoubleOrNull() != null;
+    val leftIsNumber = isValue(leftToken);
+    val rightIsNumber = isValue(rightToken);
     if (leftIsNumber && rightIsNumber) {
         throw  IllegalArgumentException("No variable name found in argument ($line)");
     }
@@ -151,8 +151,28 @@ private fun parseSingleLess(splitByLess: List<String>, line: String): LinearVari
         throw  IllegalArgumentException("No bound value found in argument ($line)");
     }
     if (leftIsNumber) {//10 < x
-        return LinearVariableBound(rightToken, VariableType.CONTINUOUS, leftToken.toDouble(), null);
+        return LinearVariableBound(rightToken, VariableType.CONTINUOUS, toValue(leftToken), null);
     } else {//x < 10
-        return LinearVariableBound(leftToken, VariableType.CONTINUOUS, 0.0, rightToken.toDouble());
+        return LinearVariableBound(leftToken, VariableType.CONTINUOUS, 0.0, toValue(rightToken));
     }
+}
+
+private fun isValue(tokenSrc: String): Boolean {
+    val token = tokenSrc.trim();
+    if (token == "infinity" || token == "-infinity") {
+        return true;
+    }
+    return token.toDoubleOrNull() != null;
+}
+
+private fun toValue(tokenSrc: String): Double? {
+    val token = tokenSrc.trim();
+    if (token == "infinity" || token == "-infinity") {
+        return null;
+    }
+    return token.toDouble();
+}
+
+private fun isName(tokenSrc: String): Boolean {
+    return !isValue(tokenSrc);
 }

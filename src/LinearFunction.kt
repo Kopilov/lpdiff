@@ -57,7 +57,7 @@ class LinearFunction constructor() {
 
 /**parse [source] string like `5 x1 + 10 x2 - 1.5 y` to [LinearFunction] object */
 fun parseLinearFunction(source: String): LinearFunction {
-    val splittedSource = source.replace("+", "|").replace("-", "|-").split("|");
+    val splittedSource = source.replace("+ ", "| ").replace("- ", "| -").split("| ");
     val items = ArrayList<LinearItem>();
     for (itemSource in splittedSource) {
         if (itemSource.isNotBlank()) {
