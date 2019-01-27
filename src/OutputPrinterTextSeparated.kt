@@ -10,12 +10,21 @@ class OutputPrinterTextSeparated constructor(val stream: PrintStream, val delimi
         stream.println(variablesNames.joinToString(delimiter));
     }
 
-    override fun printFunctionValuesForNames(variables: Iterable<LinearItem>, names: Iterable<String>, rightSide: Double) {
+    override fun printConstraintHeader(leftColumnsNames: Iterable<String>, variablesNames: Iterable<String>, rightColumnsNames: Iterable<String>) {
+        stream.print(leftColumnsNames.joinToString(delimiter));
+        stream.print(delimiter);
+        stream.print(variablesNames.joinToString(delimiter));
+        stream.print(delimiter);
+        stream.println(rightColumnsNames.joinToString(delimiter));
+    }
+
+    override fun printFunctionValuesForNames(variables: Iterable<LinearItem>, names: Iterable<String>, moreLeftCells: Iterable<String>, moreRightCells: Iterable<String>) {
         val index = HashMap<String?, Double>();
         for (variable in variables) {
             index.put(variable.name, variable.coefficient);
         }
         val rowCells = ArrayList<String>();
+        rowCells.addAll(moreLeftCells);
         fun printNameValue(name: String) {
             if (index.containsKey(name)) {
                 rowCells.add(index.get(name).toString());
@@ -26,7 +35,7 @@ class OutputPrinterTextSeparated constructor(val stream: PrintStream, val delimi
         for (name in names) {
             printNameValue(name);
         }
-        rowCells.add(rightSide.toString());
+        rowCells.addAll(moreRightCells);
         stream.println(rowCells.joinToString(delimiter));
     }
 

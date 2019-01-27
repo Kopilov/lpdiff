@@ -24,17 +24,23 @@ fun main(args: Array<String>) {
     val outputPrinter = OutputPrinterTextSeparated();
     for (varCombination in allVariablesCombinations) {
         //step 2, todo: find the most similar coefficients and right side
-        outputPrinter.printVariablesNames(varCombination);
+        outputPrinter.printConstraintHeader(listOf("Model", "Constraint"), varCombination, listOf("Sign", "Right side"));
         val constraintsGroup1 = constraintsGroups1.get(varCombination);
         val constraintsGroup2 = constraintsGroups2.get(varCombination);
         if (constraintsGroup1 != null) {
             for (constraint1 in constraintsGroup1) {
-                outputPrinter.printFunctionValuesForNames(constraint1.leftSide.items, varCombination, constraint1.rightSide);
+                outputPrinter.printFunctionValuesForNames(constraint1.leftSide.items, varCombination,
+                        listOf(model1SrcPath, constraint1.name),
+                        listOf(constraint1.sign.name, constraint1.rightSide.toString())
+                );
             }
         }
         if (constraintsGroup2 != null) {
             for (constraint2 in constraintsGroup2) {
-                outputPrinter.printFunctionValuesForNames(constraint2.leftSide.items, varCombination, constraint2.rightSide);
+                outputPrinter.printFunctionValuesForNames(constraint2.leftSide.items, varCombination,
+                        listOf(model2SrcPath, constraint2.name),
+                        listOf(constraint2.sign.name, constraint2.rightSide.toString())
+                );
             }
         }
     }
