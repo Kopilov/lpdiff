@@ -36,7 +36,11 @@ data class DoubleLinearItem(val name: String?, val coefficient1: Double?, val co
         if (coefficient1 is Double && coefficient2 is Double) {
             val middle = (coefficient1 + coefficient2) / 2;
             val absoluteDifference = calculateAbsoluteDifference();
-            return absoluteDifference?.div(middle);
+            if (middle == 0.0) {
+                return absoluteDifference;
+            } else {
+                return absoluteDifference?.div(middle.absoluteValue);
+            }
         } else {
             return null;
         }
@@ -119,4 +123,20 @@ fun convertModelItems(
             constraints,
             bounds
     );
+}
+
+fun compareConstraints(constraint1: LinearConstraint, constraint2: LinearConstraint): Double {
+    val stitchedConstraints = stitchLinearFunctions(constraint1.leftSide, constraint2.leftSide);
+    var totalDifference = 0.0;
+    for (itemPair in stitchedConstraints) {
+        val itemDiffrence = itemPair.calculateRelativeDifference();
+        if (itemDiffrence != null) {
+            totalDifference += itemDiffrence;
+        }
+    }
+    val rightSideDiffrence = DoubleLinearItem("rightSide", constraint1.rightSide, constraint2.rightSide).calculateRelativeDifference();
+    if (rightSideDiffrence != null) {
+        totalDifference += rightSideDiffrence;
+    }
+    return totalDifference;
 }
