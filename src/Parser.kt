@@ -92,7 +92,8 @@ fun parseLpFile(path: String): LinearModel {
     var varType = VariableType.CONTINUOUS;
 
     for (line in lines) {
-        when (line.toLowerCase()) {
+        when (line.toLowerCase().trim()) {
+            "" -> {}
             "minimize" -> {target = FunctionTarget.MINIMIZE; stage = LpPart.OBJECTIVE};
             "maximize" -> {target = FunctionTarget.MAXIMIZE; stage = LpPart.OBJECTIVE};
             "subject to", "such that", "st", "s.t." -> stage = LpPart.CONSTRAINTS;
@@ -107,5 +108,5 @@ fun parseLpFile(path: String): LinearModel {
     parseConstraints("", true);
     assert(LpPart.END.equals(stage));
 
-    return LinearModel(target, parseLinearFunction(objectiveBody.toString()), constraintsParsed, TreeSet(boundsIndex.values));
+    return LinearModel(target, parseLinearFunction(objectiveBody.toString().trim().removePrefix("obj:")), constraintsParsed, TreeSet(boundsIndex.values));
 }
