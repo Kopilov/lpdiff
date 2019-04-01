@@ -11,4 +11,6 @@ interface OutputPrinter {
      */
     fun printFunctionValuesForNames(variables: Iterable<LinearItem>, names: Iterable<String>, moreLeftCells: Iterable<String>, moreRightCells: Iterable<String>);
     fun printFunctionsPair(itemsInPairs: Iterable<DoubleLinearItem>);
+
+    fun printEmptySpace()
 }

@@ -51,6 +51,8 @@ data class DoubleLinearItem(val name: String?, val coefficient1: Double?, val co
     }
 }
 
+data class Matches(val numberOfSimilar: Int, val numberOfUnique1: Int, val numberOfUnique2: Int){}
+
 /** Find [LinearItem]s with same names in [fun1] and [fun2], put their names and values in the single collection */
 fun stitchLinearFunctions(fun1: LinearFunction, fun2: LinearFunction): Collection<DoubleLinearItem> {
     val stitchedItems = TreeSet<DoubleLinearItem>();

@@ -61,4 +61,9 @@ class OutputPrinterTextSeparated constructor(val stream: PrintStream, val delimi
             stream.println(rowCells.joinToString(delimiter));
         }
     }
+
+    override fun printEmptySpace() {
+        stream.println();
+        stream.println();
+    }
 }
